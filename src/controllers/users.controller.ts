@@ -13,7 +13,9 @@ export class UsersController {
 				return {
 					id: user._id as string,
 					email: user.email,
-					role: user.role
+					role: user.role,
+					createdAt: (user as any).createdAt,
+					updatedAt: (user as any).updatedAt
 				};
 			});
 			res.json(userDtos);
