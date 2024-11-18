@@ -62,20 +62,20 @@ export class AuthController {
 
       const user = await User.findOne({ email });
       if (!user) {
-        res.status(401).json({ message: 'Invalid credentials' });
+        res.status(400).json({ message: 'Invalid credentials' });
         return;
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
-        res.status(401).json({ message: 'Invalid credentials' });
+        res.status(400).json({ message: 'Invalid credentials' });
         return;
       }
 
       const token = jwt.sign(
         { id: user._id, email: user.email, role: user.role },
-        process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '14d' }
+        process.env.JWT_SECRET || 'secret-key',
+        { expiresIn: '30d' }
       );
 
       res.status(200).json({
