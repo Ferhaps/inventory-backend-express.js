@@ -1,5 +1,5 @@
 import express from 'express';
-
+import * as http from 'http';
 import cors from 'cors';
 import { authRoutes } from './routes/auth.routes';
 
@@ -14,8 +14,10 @@ const app = express();
 connectDB();
 
 app.use((cors({
-  origin: 'http://localhost:4200', // Replace with your frontend URL
-  credentials: false
+  origin: '*', // Allow any origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 })));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,23 +27,17 @@ app.use('/api/auth', authRoutes);
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    error: NODE_ENV === 'development' ? err.message : 'Internal server error'
-  });
+  res.status(500).send(NODE_ENV === 'development' ? err.message : 'Internal server error');
 });
 
 // Handle 404 routes
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Route not found'
-  });
+  res.status(404).send('Not Found');
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} in ${NODE_ENV} mode`);
+http.createServer(app).listen(PORT, () => {
+  console.log(`HTTPS Server running on https://localhost:${PORT}`);
 });
 
 // Handle unhandled promise rejections
