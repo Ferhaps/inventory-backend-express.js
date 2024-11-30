@@ -3,7 +3,7 @@ export enum UserRole {
   OPERATOR = 'OPERATOR'
 }
 
-export interface IUser {
+export type IUser = {
   email: string;
   password: string;
   role: UserRole;
