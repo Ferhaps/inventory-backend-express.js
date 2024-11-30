@@ -1,5 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { IUser, UserRole } from '../types/user';
+import { UserRole } from '../types/user';
+
+type IUser = {
+  email: string;
+  password: string;
+  role: UserRole;
+}
 
 interface UserDocument extends IUser, Document {}
 
