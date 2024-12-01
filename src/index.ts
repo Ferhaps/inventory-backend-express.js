@@ -5,7 +5,7 @@ import { authRoutes } from './routes/auth.routes';
 
 import dotenv from 'dotenv';
 import { connectDB } from './db/connection';
-import { productRoutes } from 'routes/product.routes';
+import { productRoutes } from './routes/product.routes';
 
 dotenv.config();
 const PORT = process.env.PORT || 8080;
