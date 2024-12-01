@@ -1,4 +1,4 @@
-import { UserRole } from "types/user";
+import { UserRole } from "../types/user";
 import { z } from 'zod';
 
 export const LoginDtoSchema = z.object({

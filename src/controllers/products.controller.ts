@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
 import { Product } from '../models/product.model';
-import { ProductDTO } from 'dto/product.dto';
+import { ProductDto } from '../dto/product.dto';
 
 export class ProductController {
-  
   async getProducts(req: Request, res: Response) {
     try {
       const products = await Product.find();
       
-      const productDtos: ProductDTO[] = products.map(product => ({
+      const productDtos: ProductDto[] = products.map(product => ({
         id: product._id.toString(),
         name: product.name,
         quantity: product.quantity,
