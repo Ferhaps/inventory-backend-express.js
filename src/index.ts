@@ -2,6 +2,9 @@ import express from 'express';
 import * as http from 'http';
 import cors from 'cors';
 import { authRoutes } from './routes/auth.routes';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import swaggerOptions from './config/swagger.config';
 
 import dotenv from 'dotenv';
 import { connectDB } from './db/connection';
@@ -14,6 +17,10 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
 connectDB();
+
+// Initialize Swagger
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use((cors({
   origin: '*', // Allow any origin
