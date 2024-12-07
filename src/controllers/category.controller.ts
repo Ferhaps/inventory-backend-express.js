@@ -28,10 +28,9 @@ export class CategoryController {
         name: categoryName,
         products: []
       });
-
       await newCategory.save();
 
-      res.status(200).json({
+      res.status(201).json({
         id: newCategory._id.toString(),
         name: newCategory.name
       });

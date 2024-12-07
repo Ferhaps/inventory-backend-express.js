@@ -3,4 +3,9 @@ export class ProductDto {
   name: string;
   quantity: number;
   categoryId: string;
+
+  constructor(partial: Partial<ProductDto>) {
+    Object.assign(this, partial);
+  }
 }
+
