@@ -3,7 +3,7 @@ import { Product } from '../models/product.model';
 import { ProductDto } from '../dto/product.dto';
 
 export class ProductController {
-  async getProducts(req: Request, res: Response) {
+  public async getProducts(req: Request, res: Response) {
     try {
       const products = await Product.find();
       
