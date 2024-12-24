@@ -1,13 +1,12 @@
-import { RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.model';
-import { RegisterDto, RegisterDtoSchema, RegisterResponse } from '../dto/register.dto';
-import { HttpError } from '../types/error';
-import { LoginDto, LoginDtoSchema, LoginResponse } from '../dto/login.dto';
+import { RegisterDtoSchema }  from '../dto/register.dto';
+import { Request, Response } from 'express';
+import { LoginDtoSchema } from '../dto/login.dto';
 
 export class AuthController {
-  public register: RequestHandler<{}, RegisterResponse | HttpError, RegisterDto> = async(req, res, next): Promise<void> => {
+  public async register(req: Request, res: Response) {
     try {
       const validation = RegisterDtoSchema.safeParse(req.body);
       if (!validation.success) {
@@ -15,7 +14,6 @@ export class AuthController {
           message: 'Validation erros',
           erros: validation.error.errors.map((error) => error.message)
         });
-        return;
       }
 
       const { email, password, role } = validation.data;
@@ -23,7 +21,6 @@ export class AuthController {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         res.status(400).json({ message: 'Email already exists' });
-        return;
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -41,14 +38,12 @@ export class AuthController {
           role: user.role
         }
       });
-      return;
     } catch (error) {
       res.status(400).json({ message: 'Error creating user' });
-      return;
     }
   }
 
-  public login: RequestHandler<{}, LoginResponse | HttpError, LoginDto> = async(req, res, next): Promise<void> => {
+  public async login(req: Request, res: Response) {
     try {
       const validation = LoginDtoSchema.safeParse(req.body);
       if (!validation.success) {
@@ -63,13 +58,11 @@ export class AuthController {
       const user = await User.findOne({ email });
       if (!user) {
         res.status(400).json({ message: 'Invalid credentials' });
-        return;
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         res.status(400).json({ message: 'Invalid credentials' });
-        return;
       }
 
       const token = jwt.sign(
@@ -86,10 +79,8 @@ export class AuthController {
         },
         token
       });
-      return;
     } catch (error) {
       res.status(400).json({ message: 'Error logging in' });
-      return;
     }
   }
 }
