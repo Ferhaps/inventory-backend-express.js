@@ -1,11 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { AuthRequest } from '../types/authRequest';
 
-interface CustomRequest extends Request {
-  user?: string | object;
-}
 
-const authMiddleware = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
+const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res.status(401).json({ message: "Authorization header missing or invalid" });
