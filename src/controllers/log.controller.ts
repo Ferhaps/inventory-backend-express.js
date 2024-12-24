@@ -8,6 +8,16 @@ interface PopulatedUser {
   email: string;
 }
 
+interface PopulatedProduct {
+  _id: Types.ObjectId;
+  name: string;
+}
+
+interface PopulatedCategory {
+  _id: Types.ObjectId;
+  name: string;
+}
+
 export class LogController {
   public async getLogs(req: Request, res: Response) {
     try {
@@ -33,17 +43,49 @@ export class LogController {
       const logs = await Log.find(query)
         .sort({ timestamp: -1 })
         .limit(pageSize)
-        .populate<{ user: PopulatedUser }>('user', 'email');
+        .populate<{ user: PopulatedUser }>('user', 'email')
+        .populate<{ product: PopulatedProduct }>('product', 'name')
+        .populate<{ category: PopulatedCategory }>('category', 'name');
 
-      if (!logs) {
+      if (!logs.length) {
         res.status(404).json({ message: 'No logs found' });
       }
 
-      res.json(logs);
+      const logsRes: LogResponseDto[] = logs.map(log => {
+        const baseLog: LogResponseDto = {
+          id: log._id.toString(),
+          timestamp: log.timestamp,
+          event: log.event,
+          user: {
+            id: log.user._id.toString(),
+            email: log.user.email
+          }
+        };
+
+        // Add product info if exists
+        if (log.product) {
+          baseLog.product = {
+            id: log.product._id.toString(),
+            name: log.product.name
+          };
+        }
+
+        // Add category info if exists
+        if (log.category) {
+          baseLog.category = {
+            id: log.category._id.toString(),
+            name: log.category.name
+          };
+        }
+
+        return baseLog;
+      });
+      
+      res.json(logsRes);
     } catch (error) {
       console.error('Error fetching logs:', error);
       res.status(500).json({ 
-        message: 'Internal server error while fetching logs',
+        message: 'Error while fetching logs',
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }

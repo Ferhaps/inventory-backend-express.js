@@ -11,13 +11,26 @@ export const LogSearchDtoSchema = z.object({
 
 export type LogSearchDto = z.infer<typeof LogSearchDtoSchema>;
 
+export type UserInfo = {
+  id: string;
+  email: string;
+};
+
+export type ProductInfo = {
+  id: string;
+  name: string;
+};
+
+export type CategoryInfo = {
+  id: string;
+  name: string;
+};
+
 export type LogResponseDto = {
   id: string;
   timestamp: Date;
   event: string;
-  user: {
-    id: string;
-    email: string;
-  };
-  details: Record<string, any>;
+  user: UserInfo;
+  product?: ProductInfo;
+  category?: CategoryInfo;
 };

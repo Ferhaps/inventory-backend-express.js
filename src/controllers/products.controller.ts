@@ -38,8 +38,8 @@ export class ProductController {
 
       await Log.create({
         event: LogEvent.PRODUCT_CREATE,
-        user: req.user,
-        details: { productId: product._id, name: product.name, categoryId }
+        user: req.user.id,
+        product: product._id
       });
 
       const productDto = new ProductDto({
@@ -74,8 +74,8 @@ export class ProductController {
 
       await Log.create({
         event: LogEvent.PRODUCT_UPDATE,
-        user: req.user,
-        details: { productId: id, newQuantity: quantity }
+        user: req.user.id,
+        product: id
       });
 
       res.status(200).end();
@@ -94,8 +94,8 @@ export class ProductController {
 
       await Log.create({
         event: LogEvent.PRODUCT_DELETE,
-        user: req.user,
-        details: { productId: id }
+        user: req.user.id,
+        product: id
       });
 
       res.status(204).end();

@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AuthRequest } from '../types/authRequest';
+import { UserDto } from '../dto/user.dto';
 
 
 const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
@@ -14,7 +15,7 @@ const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunctio
   try {
     const secretKey = process.env.JWT_SECRET
     const decoded = jwt.verify(token, secretKey);
-    req.user = decoded;
+    req.user = decoded as UserDto;
     next();
   } catch (err) {
     res.status(401).json({ message: "Invalid or expired token" });

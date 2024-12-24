@@ -35,8 +35,7 @@ export class AuthController {
 
       await Log.create({
         event: LogEvent.USER_REGISTER,
-        user: user._id,
-        details: { email: user.email, role: user.role }
+        user: user,
       });
 
       res.status(200).json({

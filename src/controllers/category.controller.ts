@@ -35,8 +35,8 @@ export class CategoryController {
 
       await Log.create({
         event: LogEvent.CATEGORY_CREATE,
-        user: req.user,
-        details: { categoryId: newCategory._id, name: newCategory.name }
+        user: req.user.id,
+        category: newCategory._id
       });
 
       res.status(201).json({
@@ -59,11 +59,10 @@ export class CategoryController {
 
       await Log.create({
         event: LogEvent.CATEGORY_DELETE,
-        user: req.user,
-        details: { categoryId: id }
+        user: req.user.id,
+        category: id
       });
-
-      res.status(200).end();
+      res.status(201).end();
     } catch (error) {
       res.status(400).json({ message: 'Error deleting category', error });
     }
