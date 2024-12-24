@@ -4,6 +4,8 @@ import { User } from '../models/user.model';
 import { RegisterDtoSchema }  from '../dto/register.dto';
 import { Request, Response } from 'express';
 import { LoginDtoSchema } from '../dto/login.dto';
+import { Log } from '../models/log.model';
+import { LogEvent } from '../types/log';
 
 export class AuthController {
   public async register(req: Request, res: Response) {
@@ -29,6 +31,12 @@ export class AuthController {
         email,
         password: hashedPassword,
         role
+      });
+
+      await Log.create({
+        event: LogEvent.USER_REGISTER,
+        user: user._id,
+        details: { email: user.email, role: user.role }
       });
 
       res.status(200).json({
@@ -70,6 +78,12 @@ export class AuthController {
         process.env.JWT_SECRET || 'secret-key',
         { expiresIn: '30d' }
       );
+
+      await Log.create({
+        event: LogEvent.USER_LOGIN,
+        user: user._id,
+        details: { email: user.email }
+      });
 
       res.status(200).json({
         user: {

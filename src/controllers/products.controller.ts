@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { Product } from '../models/product.model';
 import { ProductDto } from '../dto/product.dto';
+import { Log } from '../models/log.model';
+import { LogEvent } from '../types/log';
+import { AuthRequest } from '../types/authRequest';
 
 export class ProductController {
   public async getProducts(req: Request, res: Response) {
@@ -19,7 +22,7 @@ export class ProductController {
     }
   }
 
-  public async createProduct(req: Request, res: Response) {
+  public async createProduct(req: AuthRequest, res: Response) {
     try {
       const { name, categoryId } = req.query;
       if (!name || !categoryId) {
@@ -33,6 +36,12 @@ export class ProductController {
       });
       await product.save();
 
+      await Log.create({
+        event: LogEvent.PRODUCT_CREATE,
+        user: req.user,
+        details: { productId: product._id, name: product.name, categoryId }
+      });
+
       const productDto = new ProductDto({
         id: product._id.toString(),
         name: product.name,
@@ -45,7 +54,7 @@ export class ProductController {
     }
   }
 
-  public async updateQuantity(req: Request, res: Response) {
+  public async updateQuantity(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
       const { quantity } = req.query;
@@ -63,19 +72,31 @@ export class ProductController {
         res.status(404).json({ message: 'Product not found' });
       }
 
+      await Log.create({
+        event: LogEvent.PRODUCT_UPDATE,
+        user: req.user,
+        details: { productId: id, newQuantity: quantity }
+      });
+
       res.status(200).end();
     } catch (error) {
       res.status(400).json({ message: 'Error updating product quantity', error });
     }
   }
 
-  public async deleteProduct(req: Request, res: Response) {
+  public async deleteProduct(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
       const product = await Product.findByIdAndDelete(id);
       if (!product) {
         res.status(404).json({ message: 'Product not found' });
       }
+
+      await Log.create({
+        event: LogEvent.PRODUCT_DELETE,
+        user: req.user,
+        details: { productId: id }
+      });
 
       res.status(204).end();
     } catch (error) {

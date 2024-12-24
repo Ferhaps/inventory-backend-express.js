@@ -1,6 +1,9 @@
 import { CatrgoryDto } from "../dto/category.dto";
 import { Category } from "../models/category.model";
 import { Request, Response } from 'express';
+import { Log } from '../models/log.model';
+import { LogEvent } from "../types/log";
+import { AuthRequest } from "../types/authRequest";
 
 export class CategoryController {
   public async getCategories(req: Request, res: Response) {
@@ -17,7 +20,7 @@ export class CategoryController {
     }
   }
 
-  public async createCategory(req: Request, res: Response) {
+  public async createCategory(req: AuthRequest, res: Response) {
     try {
       const { categoryName } = req.query;
       if (!categoryName || typeof categoryName !== 'string') {
@@ -30,6 +33,12 @@ export class CategoryController {
       });
       await newCategory.save();
 
+      await Log.create({
+        event: LogEvent.CATEGORY_CREATE,
+        user: req.user,
+        details: { categoryId: newCategory._id, name: newCategory.name }
+      });
+
       res.status(201).json({
         id: newCategory._id.toString(),
         name: newCategory.name
@@ -39,7 +48,7 @@ export class CategoryController {
     }
   }
 
-  public async deleteCategory(req: Request, res: Response) {
+  public async deleteCategory(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
       const deletedCategory = await Category.findByIdAndDelete(id);
@@ -47,6 +56,12 @@ export class CategoryController {
       if (!deletedCategory) {
         res.status(404).json({ message: 'Category not found' });
       }
+
+      await Log.create({
+        event: LogEvent.CATEGORY_DELETE,
+        user: req.user,
+        details: { categoryId: id }
+      });
 
       res.status(200).end();
     } catch (error) {

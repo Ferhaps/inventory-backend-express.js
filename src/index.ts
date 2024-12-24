@@ -11,6 +11,7 @@ import { connectDB } from './db/connection';
 import { productRoutes } from './routes/product.routes';
 import { categoryRoutes } from './routes/category.routes';
 import { userRoutes } from './routes/user.routes';
+import { logRoutes } from './routes/log.routes';
 
 dotenv.config();
 const PORT = process.env.PORT || 8080;
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/log', logRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
