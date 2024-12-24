@@ -8,6 +8,7 @@ export class UsersController {
       const users = await User.find();
       const userDtos: UserDto[] = users.map(user => {
         return {
+          id: user._id.toString(),
           email: user.email,
           role: user.role
         };
