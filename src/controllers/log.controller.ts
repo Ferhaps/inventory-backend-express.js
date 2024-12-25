@@ -21,7 +21,9 @@ interface PopulatedCategory {
 export class LogController {
   public async getLogs(req: Request, res: Response) {
     try {
+      console.log(req.body)
       const validation = LogSearchDtoSchema.safeParse(req.body);
+      console.log(validation.data)
       if (!validation.success) {
         res.status(400).json({
           message: 'Validation errors',
@@ -86,6 +88,19 @@ export class LogController {
       console.error('Error fetching logs:', error);
       res.status(500).json({ 
         message: 'Error while fetching logs',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  public async getLogEvents(req: Request, res: Response) {
+    try {
+      const events = await Log.distinct('event');
+      res.json(events);
+    } catch (error) {
+      console.error('Error fetching log events:', error);
+      res.status(500).json({
+        message: 'Error while fetching log events',
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
