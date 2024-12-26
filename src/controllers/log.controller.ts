@@ -3,27 +3,25 @@ import { LogResponseDto, LogSearchDtoSchema } from '../dto/log.dto';
 import { Request, Response } from 'express';
 import { Types } from 'mongoose';
 
-interface PopulatedUser {
+type PopulatedUser = {
   _id: Types.ObjectId;
   email: string;
-}
+};
 
-interface PopulatedProduct {
+type PopulatedProduct = {
   _id: Types.ObjectId;
   name: string;
-}
+};
 
-interface PopulatedCategory {
+type PopulatedCategory = {
   _id: Types.ObjectId;
   name: string;
-}
+};
 
 export class LogController {
   public async getLogs(req: Request, res: Response) {
     try {
-      console.log(req.body)
       const validation = LogSearchDtoSchema.safeParse(req.body);
-      console.log(validation.data)
       if (!validation.success) {
         res.status(400).json({
           message: 'Validation errors',
@@ -33,8 +31,9 @@ export class LogController {
 
       const { pageSize, user, event, startDate, endDate } = validation.data;
 
+      // Build query only with time-based and user-based filters
       const query: any = {};
-      if (user) query.user = user;
+      if (user) query.user = new Types.ObjectId(user);
       if (event) query.event = event;
       if (startDate || endDate) {
         query.timestamp = {};
@@ -47,11 +46,11 @@ export class LogController {
         .limit(pageSize)
         .populate<{ user: PopulatedUser }>('user', 'email')
         .populate<{ product: PopulatedProduct }>('product', 'name')
-        .populate<{ category: PopulatedCategory }>('category', 'name');
+        .populate<{ category: PopulatedCategory }>('category', 'name')
+        .lean()
+        .exec();
 
-      if (!logs.length) {
-        res.status(404).json({ message: 'No logs found' });
-      }
+      console.log(logs);
 
       const logsRes: LogResponseDto[] = logs.map(log => {
         const baseLog: LogResponseDto = {
@@ -64,7 +63,6 @@ export class LogController {
           }
         };
 
-        // Add product info if exists
         if (log.product) {
           baseLog.product = {
             id: log.product._id.toString(),
@@ -72,7 +70,6 @@ export class LogController {
           };
         }
 
-        // Add category info if exists
         if (log.category) {
           baseLog.category = {
             id: log.category._id.toString(),
@@ -85,8 +82,7 @@ export class LogController {
       
       res.json(logsRes);
     } catch (error) {
-      console.error('Error fetching logs:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         message: 'Error while fetching logs',
         error: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -98,7 +94,6 @@ export class LogController {
       const events = await Log.distinct('event');
       res.json(events);
     } catch (error) {
-      console.error('Error fetching log events:', error);
       res.status(500).json({
         message: 'Error while fetching log events',
         error: error instanceof Error ? error.message : 'Unknown error'
