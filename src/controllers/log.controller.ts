@@ -31,7 +31,6 @@ export class LogController {
 
       const { pageSize, user, event, startDate, endDate } = validation.data;
 
-      // Build query only with time-based and user-based filters
       const query: any = {};
       if (user) query.user = new Types.ObjectId(user);
       if (event) query.event = event;
@@ -45,12 +44,8 @@ export class LogController {
         .sort({ timestamp: -1 })
         .limit(pageSize)
         .populate<{ user: PopulatedUser }>('user', 'email')
-        .populate<{ product: PopulatedProduct }>('product', 'name')
-        .populate<{ category: PopulatedCategory }>('category', 'name')
         .lean()
         .exec();
-
-      console.log(logs);
 
       const logsRes: LogResponseDto[] = logs.map(log => {
         const baseLog: LogResponseDto = {
@@ -65,14 +60,14 @@ export class LogController {
 
         if (log.product) {
           baseLog.product = {
-            id: log.product._id.toString(),
+            id: log.product.id.toString(),
             name: log.product.name
           };
         }
 
         if (log.category) {
           baseLog.category = {
-            id: log.category._id.toString(),
+            id: log.category.id.toString(),
             name: log.category.name
           };
         }
