@@ -1,21 +1,11 @@
-import { Log } from '../models/log.model';
+import { ILog, Log } from '../models/log.model';
 import { LogResponseDto, LogSearchDtoSchema } from '../dto/log.dto';
 import { Request, Response } from 'express';
-import { Types } from 'mongoose';
+import { RootFilterQuery, Types } from 'mongoose';
 
 type PopulatedUser = {
   _id: Types.ObjectId;
   email: string;
-};
-
-type PopulatedProduct = {
-  _id: Types.ObjectId;
-  name: string;
-};
-
-type PopulatedCategory = {
-  _id: Types.ObjectId;
-  name: string;
 };
 
 export class LogController {
@@ -29,11 +19,13 @@ export class LogController {
         });
       }
 
-      const { pageSize, user, event, startDate, endDate } = validation.data;
+      const { pageSize, user, event, startDate, endDate, product, category } = validation.data;
 
-      const query: any = {};
+      const query: RootFilterQuery<ILog> = {};
       if (user) query.user = new Types.ObjectId(user);
       if (event) query.event = event;
+      if (product) query['product.id'] = new Types.ObjectId(product);
+      if (category) query['category.id'] = new Types.ObjectId(category);
       if (startDate || endDate) {
         query.timestamp = {};
         if (startDate) query.timestamp.$gte = new Date(startDate);
