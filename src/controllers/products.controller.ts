@@ -4,6 +4,7 @@ import { ProductDto } from '../dto/product.dto';
 import { Log } from '../models/log.model';
 import { LogEvent } from '../types/log';
 import { AuthRequest } from '../types/authRequest';
+import { Category } from '../models/category.model';
 
 export class ProductController {
   public async getProducts(req: Request, res: Response) {
@@ -34,14 +35,18 @@ export class ProductController {
         category: categoryId,
         quantity: 0
       });
-      await product.save();
 
+      const category = await Category.findById(categoryId);
       await Log.create({
         event: LogEvent.PRODUCT_CREATE,
         user: req.user.id,
         product: {
           id: product._id,
           name: product.name
+        },
+        category: {
+          id: category._id,
+          name: category.name
         }
       });
 
