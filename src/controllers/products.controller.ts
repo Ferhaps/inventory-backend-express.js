@@ -66,19 +66,19 @@ export class ProductController {
     try {
       const { id } = req.params;
       const { quantity } = req.query;
-      if (!quantity || isNaN(Number(quantity))) {
-        res.status(400).json({ message: 'Valid quantity query parameter is required' });
+      if (id && (!quantity || isNaN(Number(quantity)))) {
+        res.status(400).json({ message: 'Valid quantity query parameter and ID are required' });
       }
 
-      const product = await Product.findByIdAndUpdate(
-        id,
-        { quantity: Number(quantity) },
-        { new: true }
-      );
+      const product = await Product.findById(id);
 
       if (!product) {
         res.status(404).json({ message: 'Product not found' });
       }
+
+      const oldQuantity = product.quantity;
+      product.quantity = Number(quantity);
+      await product.save();
 
       await Log.create({
         event: LogEvent.PRODUCT_UPDATE,
@@ -86,7 +86,8 @@ export class ProductController {
         product: {
           id: product._id,
           name: product.name
-        }
+        },
+        details: `Quantity updated to ${product.quantity}, was ${oldQuantity}`
       });
 
       res.status(200).end();
