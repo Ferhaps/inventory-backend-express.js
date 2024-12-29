@@ -64,6 +64,10 @@ export class LogController {
           };
         }
 
+        if (log.details) {
+          baseLog.details = log.details;
+        }
+
         return baseLog;
       });
       

@@ -12,6 +12,7 @@ export interface ILog extends Document {
     id: mongoose.Types.ObjectId;
     name: string;
   };
+  details?: string;
 }
 
 const LogSchema: Schema = new Schema({
@@ -25,7 +26,8 @@ const LogSchema: Schema = new Schema({
   category: {
     id: { type: Schema.Types.ObjectId, required: false },
     name: { type: String, required: false }
-  }
+  },
+  details: { type: String, required: false }
 });
 
 export const Log = mongoose.model<ILog>('Log', LogSchema);

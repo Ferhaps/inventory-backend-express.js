@@ -35,4 +35,5 @@ export type LogResponseDto = {
   user: UserInfo;
   product?: ProductInfo;
   category?: CategoryInfo;
+  details?: string;
 };
