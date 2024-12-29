@@ -30,7 +30,7 @@ export class ProductController {
         res.status(400).json({ message: 'Name and categoryId query parameters are required' });
       }
 
-      const product = new Product({
+      const product = await Product.create({
         name,
         category: categoryId,
         quantity: 0
