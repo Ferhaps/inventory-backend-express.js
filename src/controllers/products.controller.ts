@@ -1,5 +1,5 @@
+import { Product } from './../models/product.model';
 import { Request, Response } from 'express';
-import { Product } from '../models/product.model';
 import { ProductDto } from '../dto/product.dto';
 import { Log } from '../models/log.model';
 import { LogEvent } from '../types/log';
@@ -11,11 +11,13 @@ export class ProductController {
     try {
       const products = await Product.find();
       
-      const productDtos: ProductDto[] = products.map(product => ({
+      const productDtos: ProductDto[] = products.map((product: any) => ({
         id: product._id.toString(),
         name: product.name,
         quantity: product.quantity,
-        categoryId: product.category._id.toString()
+        categoryId: product.category._id.toString(),
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt
       }));
       res.json(productDtos);
     } catch (error) {
