@@ -56,7 +56,9 @@ export class ProductController {
         id: product._id.toString(),
         name: product.name,
         quantity: product.quantity,
-        categoryId: product.category.toString()
+        categoryId: product.category.toString(),
+        createdAt: (product as any).createdAt,
+        updatedAt: (product as any).updatedAt
       });
       res.status(201).json(productDto);
     } catch (error) {
