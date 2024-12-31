@@ -13,6 +13,8 @@ export class CategoryController {
       const cateogoryDtos: CatrgoryDto[] = categories.map(category => ({
         id: category._id.toString(),
         name: category.name,
+        createdAt: (category as any).createdAt,
+        updatedAt: (category as any).updatedAt
       }));
       res.json(cateogoryDtos);
     } catch (error) {
