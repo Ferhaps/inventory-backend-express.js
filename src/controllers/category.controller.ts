@@ -46,7 +46,9 @@ export class CategoryController {
 
       res.status(201).json({
         id: newCategory._id.toString(),
-        name: newCategory.name
+        name: newCategory.name,
+        createdAt: (newCategory as any).createdAt,
+        updatedAt: (newCategory as any).updatedAt
       });
     } catch (error) {
       res.status(400).json({ message: 'Error creating category', error });
