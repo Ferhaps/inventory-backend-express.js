@@ -35,21 +35,21 @@ export class CategoryController {
       });
       await newCategory.save();
 
-      await Log.create({
-        event: LogEvent.CATEGORY_CREATE,
-        user: req.user.id,
-        category: {
-          id: newCategory._id,
-          name: newCategory.name
-        }
-      });
-
       res.status(201).json({
         id: newCategory._id.toString(),
         name: newCategory.name,
         createdAt: (newCategory as any).createdAt,
         updatedAt: (newCategory as any).updatedAt
       });
+
+      Log.create({
+        event: LogEvent.CATEGORY_CREATE,
+        user: req.user.id,
+        category: {
+          id: newCategory._id,
+          name: newCategory.name
+        }
+      }).catch(err => console.error('Error creating category log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error creating category', error });
     }
@@ -64,15 +64,16 @@ export class CategoryController {
         res.status(404).json({ message: 'Category not found' });
       }
 
-      await Log.create({
+      res.status(201).end();
+
+      Log.create({
         event: LogEvent.CATEGORY_DELETE,
         user: req.user.id,
         category: {
           id: deletedCategory._id,
           name: deletedCategory.name
         }
-      });
-      res.status(201).end();
+      }).catch(err => console.error('Error creating delete category log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error deleting category', error });
     }

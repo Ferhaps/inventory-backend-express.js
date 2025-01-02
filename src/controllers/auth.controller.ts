@@ -33,11 +33,6 @@ export class AuthController {
         role
       });
 
-      await Log.create({
-        event: LogEvent.USER_REGISTER,
-        user: user,
-      });
-
       res.status(200).json({
         user: {
           id: user._id,
@@ -45,6 +40,12 @@ export class AuthController {
           role: user.role
         }
       });
+
+      // Log after response
+      Log.create({
+        event: LogEvent.USER_REGISTER,
+        user: user,
+      }).catch(err => console.error('Error creating register log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error creating user' });
     }
@@ -78,12 +79,6 @@ export class AuthController {
         { expiresIn: '30d' }
       );
 
-      await Log.create({
-        event: LogEvent.USER_LOGIN,
-        user: user._id,
-        details: { email: user.email }
-      });
-
       res.status(200).json({
         user: {
           id: user._id,
@@ -92,6 +87,13 @@ export class AuthController {
         },
         token
       });
+
+      // Log after response
+      Log.create({
+        event: LogEvent.USER_LOGIN,
+        user: user._id,
+        details: { email: user.email }
+      }).catch(err => console.error('Error creating login log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error logging in' });
     }

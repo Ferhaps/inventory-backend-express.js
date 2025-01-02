@@ -39,18 +39,6 @@ export class ProductController {
       });
 
       const category = await Category.findById(categoryId);
-      await Log.create({
-        event: LogEvent.PRODUCT_CREATE,
-        user: req.user.id,
-        product: {
-          id: product._id,
-          name: product.name
-        },
-        category: {
-          id: category._id,
-          name: category.name
-        }
-      });
 
       const productDto = new ProductDto({
         id: product._id.toString(),
@@ -61,6 +49,19 @@ export class ProductController {
         updatedAt: (product as any).updatedAt
       });
       res.status(201).json(productDto);
+
+      Log.create({
+        event: LogEvent.PRODUCT_CREATE,
+        user: req.user.id,
+        product: {
+          id: product._id,
+          name: product.name
+        },
+        category: {
+          id: category._id,
+          name: category.name
+        }
+      }).catch(err => console.error('Error creating product log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error creating product', error });
     }
@@ -84,7 +85,9 @@ export class ProductController {
       product.quantity = Number(quantity);
       await product.save();
 
-      await Log.create({
+      res.status(200).end();
+
+      Log.create({
         event: LogEvent.PRODUCT_UPDATE,
         user: req.user.id,
         product: {
@@ -92,9 +95,7 @@ export class ProductController {
           name: product.name
         },
         details: `Quantity updated to ${product.quantity}, was ${oldQuantity}`
-      });
-
-      res.status(200).end();
+      }).catch(err => console.error('Error creating update log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error updating product quantity', error });
     }
@@ -108,16 +109,16 @@ export class ProductController {
         res.status(404).json({ message: 'Product not found' });
       }
 
-      await Log.create({
+      res.status(204).end();
+
+      Log.create({
         event: LogEvent.PRODUCT_DELETE,
         user: req.user.id,
         product: {
           id: product._id,
           name: product.name
         }
-      });
-
-      res.status(204).end();
+      }).catch(err => console.error('Error creating delete log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error deleting product', error });
     }
