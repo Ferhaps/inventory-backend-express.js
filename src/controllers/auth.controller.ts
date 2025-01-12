@@ -33,13 +33,12 @@ export class AuthController {
         role
       });
 
-      res.status(200).json({
-        user: {
-          id: user._id,
-          email: user.email,
-          role: user.role
-        }
-      });
+      const userJson = {
+        id: user._id,
+        email: user.email,
+        role: user.role
+      };
+      res.status(200).json(userJson);
 
       // Log after response
       Log.create({
