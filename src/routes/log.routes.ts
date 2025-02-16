@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import adminMiddleware from '../middleware/admin.middleware';
 import { LogController } from '../controllers/log.controller';
+import authMiddleware from '../middleware/auth.middleware';
 
 /**
  * @swagger
@@ -49,5 +50,5 @@ import { LogController } from '../controllers/log.controller';
 export const logRoutes = Router();
 const logController = new LogController();
 
-logRoutes.post('/', adminMiddleware, logController.getLogs);
-logRoutes.get('/events', adminMiddleware, logController.getLogEvents);
+logRoutes.post('/', authMiddleware, logController.getLogs);
+logRoutes.get('/events', authMiddleware, logController.getLogEvents);

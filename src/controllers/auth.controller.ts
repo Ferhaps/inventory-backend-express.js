@@ -40,7 +40,6 @@ export class AuthController {
       };
       res.status(200).json(userJson);
 
-      // Log after response
       Log.create({
         event: LogEvent.USER_REGISTER,
         user: user,
@@ -87,7 +86,6 @@ export class AuthController {
         token
       });
 
-      // Log after response
       Log.create({
         event: LogEvent.USER_LOGIN,
         user: user._id,
