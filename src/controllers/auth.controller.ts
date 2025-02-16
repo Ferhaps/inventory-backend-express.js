@@ -91,7 +91,6 @@ export class AuthController {
       Log.create({
         event: LogEvent.USER_LOGIN,
         user: user._id,
-        details: { email: user.email }
       }).catch(err => console.error('Error creating login log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error logging in' });
