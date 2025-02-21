@@ -16,6 +16,7 @@ export class UsersController {
       res.json(userDtos);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching users', error });
+      return;
     }
   }
 }

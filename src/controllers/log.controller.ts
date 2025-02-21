@@ -17,6 +17,7 @@ export class LogController {
           message: 'Validation errors',
           errors: validation.error.errors
         });
+        return;
       }
 
       const { pageSize, user, event, startDate, endDate, product, category } = validation.data;
@@ -77,6 +78,7 @@ export class LogController {
         message: 'Error while fetching logs',
         error: error instanceof Error ? error.message : 'Unknown error'
       });
+      return;
     }
   }
 
@@ -89,6 +91,7 @@ export class LogController {
         message: 'Error while fetching log events',
         error: error instanceof Error ? error.message : 'Unknown error'
       });
+      return;
     }
   }
 }
