@@ -48,6 +48,7 @@ export class AuthController {
       }).catch(err => console.error('Error creating register log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error creating user' });
+      return;
     }
   }
 
@@ -96,6 +97,7 @@ export class AuthController {
       }).catch(err => console.error('Error creating login log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error logging in' });
+      return;
     }
   }
 }

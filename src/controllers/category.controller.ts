@@ -19,6 +19,7 @@ export class CategoryController {
       res.json(cateogoryDtos);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching categories', error });
+      return;
     }
   }
 
@@ -27,6 +28,14 @@ export class CategoryController {
       const { categoryName } = req.query;
       if (!categoryName || typeof categoryName !== 'string') {
         res.status(400).json({ message: 'Category name is required' });
+        return;
+      }
+
+      // throw error if category with same name exists
+      const existingCategory = await Category.findOne({ name: categoryName });
+      if (existingCategory) {
+        res.status(400).json({ message: 'Cannot create category with existing name' });
+        return;
       }
 
       const newCategory = new Category({
@@ -52,6 +61,7 @@ export class CategoryController {
       }).catch(err => console.error('Error creating category log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error creating category', error });
+      return;
     }
   }
 
@@ -62,6 +72,7 @@ export class CategoryController {
       
       if (!deletedCategory) {
         res.status(404).json({ message: 'Category not found' });
+        return;
       }
 
       res.status(201).end();
@@ -76,6 +87,7 @@ export class CategoryController {
       }).catch(err => console.error('Error creating delete category log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error deleting category', error });
+      return;
     }
   }
 }
