@@ -16,6 +16,7 @@ export class AuthController {
           message: 'Validation erros',
           erros: validation.error.errors.map((error) => error.message)
         });
+        return;
       }
 
       const { email, password, role } = validation.data;
@@ -23,6 +24,7 @@ export class AuthController {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         res.status(400).json({ message: 'Email already exists' });
+        return;
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -64,11 +66,13 @@ export class AuthController {
       const user = await User.findOne({ email });
       if (!user) {
         res.status(400).json({ message: 'Invalid credentials' });
+        return;
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         res.status(400).json({ message: 'Invalid credentials' });
+        return;
       }
 
       const token = jwt.sign(
