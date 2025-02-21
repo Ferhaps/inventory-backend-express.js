@@ -22,6 +22,7 @@ export class ProductController {
       res.json(productDtos);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching products', error });
+      return;
     }
   }
 
@@ -30,6 +31,7 @@ export class ProductController {
       const { name, categoryId } = req.query;
       if (!name || !categoryId) {
         res.status(400).json({ message: 'Name and categoryId query parameters are required' });
+        return;
       }
 
       const product = await Product.create({
@@ -64,6 +66,7 @@ export class ProductController {
       }).catch(err => console.error('Error creating product log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error creating product', error });
+      return;
     }
   }
 
@@ -72,13 +75,20 @@ export class ProductController {
       const { id } = req.params;
       const { quantity } = req.query;
       if (id && (!quantity || isNaN(Number(quantity)))) {
-        res.status(400).json({ message: 'Valid quantity query parameter and ID are required' });
+        res.status(400).json({ message: 'Quantity and ID are required' });
+        return
+      }
+
+      if (Number(quantity) < 0) {
+        res.status(400).json({ message: 'Quantity cannot be a negative number' });
+        return
       }
 
       const product = await Product.findById(id);
 
       if (!product) {
         res.status(404).json({ message: 'Product not found' });
+        return;
       }
 
       const oldQuantity = product.quantity;
@@ -98,6 +108,7 @@ export class ProductController {
       }).catch(err => console.error('Error creating update log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error updating product quantity', error });
+      return;
     }
   }
 
@@ -107,6 +118,7 @@ export class ProductController {
       const product = await Product.findByIdAndDelete(id);
       if (!product) {
         res.status(404).json({ message: 'Product not found' });
+        return;
       }
 
       res.status(204).end();
@@ -121,6 +133,7 @@ export class ProductController {
       }).catch(err => console.error('Error creating delete log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error deleting product', error });
+      return;
     }
   }
 }
