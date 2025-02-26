@@ -1,6 +1,8 @@
 import { UserDto } from "../dto/user.dto";
+import { Log } from "../models/log.model";
 import { User } from "../models/user.model";
 import { Request, Response } from 'express';
+import { LogEvent } from "../types/log";
 
 export class UsersController {
   public async getUsers(req: Request, res: Response) {
@@ -16,6 +18,27 @@ export class UsersController {
       res.json(userDtos);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching users', error });
+      return;
+    }
+  }
+
+  public async deleteUser(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = await User.findByIdAndDelete(id);
+      if (!user) {
+        res.status(404).json({ message: 'User not found' });
+        return;
+      }
+
+      res.status(204).end();
+
+      Log.create({
+        event: LogEvent.USER_DELETE,
+        user: id
+      }).catch(err => console.error('Error creating delete log:', err));
+    } catch (error) {
+      res.status(400).json({ message: 'Error deleting user', error });
       return;
     }
   }
