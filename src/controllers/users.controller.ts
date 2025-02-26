@@ -3,6 +3,7 @@ import { Log } from "../models/log.model";
 import { User } from "../models/user.model";
 import { Request, Response } from 'express';
 import { LogEvent } from "../types/log";
+import { AuthRequest } from "../types/authRequest";
 
 export class UsersController {
   public async getUsers(req: Request, res: Response) {
@@ -22,7 +23,7 @@ export class UsersController {
     }
   }
 
-  public async deleteUser(req: Request, res: Response) {
+  public async deleteUser(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
       const user = await User.findByIdAndDelete(id);
@@ -35,7 +36,8 @@ export class UsersController {
 
       Log.create({
         event: LogEvent.USER_DELETE,
-        user: id
+        user: req.user.id,
+        details: `Deleted user ${user.email}`
       }).catch(err => console.error('Error creating delete log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error deleting user', error });
