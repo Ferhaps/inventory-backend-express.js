@@ -6,7 +6,7 @@ import { RootFilterQuery, Types } from 'mongoose';
 type PopulatedUser = {
   _id: Types.ObjectId;
   email: string;
-};
+} | null;
 
 export class LogController {
   public async getLogs(req: Request, res: Response) {
@@ -45,10 +45,15 @@ export class LogController {
           id: log._id.toString(),
           timestamp: log.timestamp,
           event: log.event,
-          user: {
-            id: log.user._id.toString(),
-            email: log.user.email
-          }
+          user: log.user
+            ? {
+                id: log.user._id.toString(),
+                email: log.user.email
+              }
+            : {
+                id: 'deleted',
+                email: 'User deleted'
+              }
         };
 
         if (log.product) {

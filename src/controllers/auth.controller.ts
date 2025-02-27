@@ -6,9 +6,10 @@ import { Request, Response } from 'express';
 import { LoginDtoSchema } from '../dto/login.dto';
 import { Log } from '../models/log.model';
 import { LogEvent } from '../types/log';
+import { AuthRequest } from '../types/authRequest';
 
 export class AuthController {
-  public async register(req: Request, res: Response) {
+  public async register(req: AuthRequest, res: Response) {
     try {
       const validation = RegisterDtoSchema.safeParse(req.body);
       if (!validation.success) {
@@ -44,7 +45,8 @@ export class AuthController {
 
       Log.create({
         event: LogEvent.USER_REGISTER,
-        user: user,
+        user: req.user.id,
+        details: `Registered user ${user.email}`
       }).catch(err => console.error('Error creating register log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error creating user' });
@@ -93,7 +95,7 @@ export class AuthController {
 
       Log.create({
         event: LogEvent.USER_LOGIN,
-        user: user._id,
+        user: user._id
       }).catch(err => console.error('Error creating login log:', err));
     } catch (error) {
       res.status(400).json({ message: 'Error logging in' });
