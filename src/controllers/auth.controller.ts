@@ -14,8 +14,8 @@ export class AuthController {
       const validation = RegisterDtoSchema.safeParse(req.body);
       if (!validation.success) {
         res.status(400).json({
-          message: 'Validation erros',
-          erros: validation.error.errors.map((error) => error.message)
+          message: validation.error.errors.map((error) => error.message).join(', '),
+          erros: 'Validation errors'
         });
         return;
       }
