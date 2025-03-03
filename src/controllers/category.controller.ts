@@ -1,12 +1,12 @@
 import { CatrgoryDto } from "../dto/category.dto";
 import { Category } from "../models/category.model";
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Log } from '../models/log.model';
 import { LogEvent } from "../types/log";
 import { AuthRequest } from "../types/authRequest";
 
 export class CategoryController {
-  public async getCategories(req: Request, res: Response) {
+  public async getCategories(req: AuthRequest, res: Response) {
     try {
       const categories = await Category.find();
       

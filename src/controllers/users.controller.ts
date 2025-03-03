@@ -1,12 +1,12 @@
 import { UserDto } from "../dto/user.dto";
 import { Log } from "../models/log.model";
 import { User } from "../models/user.model";
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { LogEvent } from "../types/log";
 import { AuthRequest } from "../types/authRequest";
 
 export class UsersController {
-  public async getUsers(req: Request, res: Response) {
+  public async getUsers(req: AuthRequest, res: Response) {
     try {
       const users = await User.find();
       const userDtos: UserDto[] = users.map(user => {

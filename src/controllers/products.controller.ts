@@ -1,5 +1,5 @@
 import { Product } from './../models/product.model';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ProductDto } from '../dto/product.dto';
 import { Log } from '../models/log.model';
 import { LogEvent } from '../types/log';
@@ -7,7 +7,7 @@ import { AuthRequest } from '../types/authRequest';
 import { Category } from '../models/category.model';
 
 export class ProductController {
-  public async getProducts(req: Request, res: Response) {
+  public async getProducts(req: AuthRequest, res: Response) {
     try {
       const products = await Product.find();
       
@@ -80,7 +80,7 @@ export class ProductController {
       }
 
       if (Number(quantity) < 0) {
-        res.status(400).json({ message: 'Quantity cannot be a negative number' });
+        res.status(400).json({ message: 'Quantity cannot be negative' });
         return
       }
 

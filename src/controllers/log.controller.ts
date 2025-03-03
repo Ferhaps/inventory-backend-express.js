@@ -1,7 +1,8 @@
 import { ILog, Log } from '../models/log.model';
 import { LogResponseDto, LogSearchDtoSchema } from '../dto/log.dto';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { RootFilterQuery, Types } from 'mongoose';
+import { AuthRequest } from '../types/authRequest';
 
 type PopulatedUser = {
   _id: Types.ObjectId;
@@ -9,13 +10,13 @@ type PopulatedUser = {
 } | null;
 
 export class LogController {
-  public async getLogs(req: Request, res: Response) {
+  public async getLogs(req: AuthRequest, res: Response) {
     try {
       const validation = LogSearchDtoSchema.safeParse(req.body);
       if (!validation.success) {
         res.status(400).json({
-          message: 'Validation errors',
-          errors: validation.error.errors
+          message: validation.error.errors.map((error) => error.message).join(', '),
+          erros: 'Validation errors'
         });
         return;
       }
@@ -87,7 +88,7 @@ export class LogController {
     }
   }
 
-  public async getLogEvents(req: Request, res: Response) {
+  public async getLogEvents(req: AuthRequest, res: Response) {
     try {
       const events = await Log.distinct('event');
       res.json(events);
