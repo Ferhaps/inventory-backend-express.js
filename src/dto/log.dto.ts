@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { LogEvent } from '../types/log';
 
 export const LogSearchDtoSchema = z.object({
-  pageSize: z.number().min(1).max(100),
+  pageSize: z.number().min(1),
   user: z.string().optional(),
   category: z.string().optional(),
   product : z.string().optional(),
