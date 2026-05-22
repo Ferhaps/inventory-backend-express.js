@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+import { setServers } from 'dns';
+
+// Use public DNS to avoid router-level DNS-over-TCP blocks for SRV lookups
+setServers(['8.8.8.8', '1.1.1.1']);
 
 export const connectDB = () => {
 	const MONGO_URL = process.env.CONNECTION_STRING;
