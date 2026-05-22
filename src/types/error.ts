@@ -1,4 +1,4 @@
 export type HttpError = {
-  message: string;
-  erros?: any[];
+	message: string;
+	erros?: any[];
 };

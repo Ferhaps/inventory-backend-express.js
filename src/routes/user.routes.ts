@@ -1,7 +1,7 @@
-import { Router } from "express";
-import authMiddleware from "../middleware/auth.middleware";
-import { UsersController } from "../controllers/users.controller";
-import adminMiddleware from "../middleware/admin.middleware";
+import { Router } from 'express';
+import authMiddleware from '../middleware/auth.middleware';
+import { UsersController } from '../controllers/users.controller';
+import adminMiddleware from '../middleware/admin.middleware';
 
 /**
  * @swagger
@@ -30,7 +30,7 @@ import adminMiddleware from "../middleware/admin.middleware";
  *                     type: string
  *       400:
  *         description: Error fetching users
- * 
+ *
  * /api/users/{id}:
  *   delete:
  *     tags:

@@ -62,7 +62,7 @@ import adminMiddleware from '../middleware/admin.middleware';
  *         description: Product created successfully
  *       400:
  *         description: Error creating product
- * 
+ *
  * /api/products/{id}:
  *   patch:
  *     tags:

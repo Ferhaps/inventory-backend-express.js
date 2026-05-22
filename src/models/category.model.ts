@@ -1,15 +1,18 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ICategory extends Document {
-  name: string;
-  products: mongoose.Types.ObjectId[];
+	name: string;
+	products: mongoose.Types.ObjectId[];
 }
 
-const CategorySchema: Schema = new Schema({
-  name: { type: String, required: true },
-  products: [{ type: Schema.Types.ObjectId, ref: 'Product' }]
-}, {
-  timestamps: true
-});
+const CategorySchema: Schema = new Schema(
+	{
+		name: { type: String, required: true },
+		products: [{ type: Schema.Types.ObjectId, ref: 'Product' }]
+	},
+	{
+		timestamps: true
+	}
+);
 
 export const Category = mongoose.model<ICategory>('Category', CategorySchema);

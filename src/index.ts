@@ -24,12 +24,14 @@ connectDB();
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.use(cors({
-  origin: '*', // Allow any origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+app.use(
+	cors({
+		origin: '*', // Allow any origin
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+		credentials: true
+	})
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -40,24 +42,33 @@ app.use('/api/users', userRoutes);
 app.use('/api/log', logRoutes);
 
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).send(NODE_ENV === 'development' ? err.message : 'Internal server error');
-});
+app.use(
+	(
+		err: Error,
+		req: express.Request,
+		res: express.Response,
+		next: express.NextFunction
+	) => {
+		console.error(err.stack);
+		res
+			.status(500)
+			.send(NODE_ENV === 'development' ? err.message : 'Internal server error');
+	}
+);
 
 // Handle 404 routes
 app.use((req, res) => {
-  res.status(404).send('Not Found');
+	res.status(404).send('Not Found');
 });
 
 // Start server
 http.createServer(app).listen(PORT, () => {
-  console.log(`HTTPS Server running on https://localhost:${PORT}`);
+	console.log(`HTTPS Server running on https://localhost:${PORT}`);
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err: Error) => {
-  console.error('Unhandled Promise Rejection:', err);
-  // Close server & exit process
-  process.exit(1);
+	console.error('Unhandled Promise Rejection:', err);
+	// Close server & exit process
+	process.exit(1);
 });

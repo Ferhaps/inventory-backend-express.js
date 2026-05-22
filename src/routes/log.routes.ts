@@ -88,7 +88,7 @@ import authMiddleware from '../middleware/auth.middleware';
  *         description: No logs found
  *       500:
  *         description: Server error
- * 
+ *
  * /api/logs/events:
  *   get:
  *     tags:

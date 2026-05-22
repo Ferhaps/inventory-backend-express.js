@@ -33,7 +33,7 @@ import { CategoryController } from '../controllers/category.controller';
  *         description: Error fetching categories
  *       401:
  *         description: Unauthorized access
- *   
+ *
  *   post:
  *     tags:
  *       - Categories
@@ -71,7 +71,7 @@ import { CategoryController } from '../controllers/category.controller';
  *         description: Error creating category
  *       401:
  *         description: Unauthorized access
- * 
+ *
  * /api/categories/{id}:
  *   delete:
  *     tags:
@@ -106,4 +106,8 @@ const categoryController = new CategoryController();
 
 categoryRoutes.get('/', authMiddleware, categoryController.getCategories);
 categoryRoutes.post('/', authMiddleware, categoryController.createCategory);
-categoryRoutes.delete('/:id', adminMiddleware, categoryController.deleteCategory);
+categoryRoutes.delete(
+	'/:id',
+	adminMiddleware,
+	categoryController.deleteCategory
+);
