@@ -28,7 +28,7 @@ export class ProductController {
 
 	public async createProduct(req: AuthRequest, res: Response) {
 		try {
-			const { name, categoryId } = req.query;
+			const { name, categoryId, quantity } = req.query;
 			if (!name || !categoryId) {
 				res
 					.status(400)
@@ -38,10 +38,17 @@ export class ProductController {
 				return;
 			}
 
+			if (quantity !== undefined && isNaN(Number(quantity))) {
+				res.status(400).json({ message: 'Quantity must be a valid number' });
+				return;
+			}
+
+			const initialQuantity = quantity !== undefined ? Number(quantity) : 0;
+
 			const product = await Product.create({
 				name,
 				category: categoryId,
-				quantity: 0
+				quantity: initialQuantity
 			});
 
 			const category = await Category.findById(categoryId);
@@ -49,7 +56,7 @@ export class ProductController {
 			const productDto = new ProductDto({
 				id: product._id.toString(),
 				name: product.name,
-				quantity: product.quantity,
+				quantity: initialQuantity,
 				categoryId: product.category.toString(),
 				createdAt: (product as any).createdAt,
 				updatedAt: (product as any).updatedAt
@@ -66,7 +73,8 @@ export class ProductController {
 				category: {
 					id: category._id,
 					name: category.name
-				}
+				},
+				details: `Initial quantity: ${product.quantity}`
 			}).catch((err) => console.error('Error creating product log:', err));
 		} catch (error) {
 			res.status(400).json({ message: 'Error creating product', error });
