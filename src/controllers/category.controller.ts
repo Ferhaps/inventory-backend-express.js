@@ -1,5 +1,6 @@
 import { CatrgoryDto } from '../dto/category.dto';
 import { Category } from '../models/category.model';
+import { Product } from '../models/product.model';
 import { Response } from 'express';
 import { Log } from '../models/log.model';
 import { LogEvent } from '../types/log';
@@ -77,7 +78,23 @@ export class CategoryController {
 				return;
 			}
 
+			const deletedProducts = await Product.find({ category: id });
+			await Product.deleteMany({ category: id });
+
 			res.status(201).end();
+
+			Promise.all(
+				deletedProducts.map((product) =>
+					Log.create({
+						event: LogEvent.PRODUCT_DELETE,
+						user: req.user.id,
+						product: {
+							id: product._id,
+							name: product.name
+						}
+					})
+				)
+			).catch((err) => console.error('Error creating product delete logs:', err));
 
 			Log.create({
 				event: LogEvent.CATEGORY_DELETE,
