@@ -12,7 +12,7 @@ export class CategoryController {
 			const categories = await Category.find();
 
 			const cateogoryDtos: CatrgoryDto[] = categories.map((category) => ({
-				id: category._id.toString(),
+				id: category._id as string,
 				name: category.name,
 				createdAt: (category as any).createdAt,
 				updatedAt: (category as any).updatedAt
@@ -48,7 +48,7 @@ export class CategoryController {
 			await newCategory.save();
 
 			res.status(201).json({
-				id: newCategory._id.toString(),
+				id: newCategory._id as string,
 				name: newCategory.name,
 				createdAt: (newCategory as any).createdAt,
 				updatedAt: (newCategory as any).updatedAt
@@ -56,7 +56,7 @@ export class CategoryController {
 
 			Log.create({
 				event: LogEvent.CATEGORY_CREATE,
-				user: req.user.id,
+				user: req?.user?.id,
 				category: {
 					id: newCategory._id,
 					name: newCategory.name
@@ -87,7 +87,7 @@ export class CategoryController {
 				deletedProducts.map((product) =>
 					Log.create({
 						event: LogEvent.PRODUCT_DELETE,
-						user: req.user.id,
+						user: req?.user?.id,
 						product: {
 							id: product._id,
 							name: product.name
@@ -98,7 +98,7 @@ export class CategoryController {
 
 			Log.create({
 				event: LogEvent.CATEGORY_DELETE,
-				user: req.user.id,
+				user: req?.user?.id,
 				category: {
 					id: deletedCategory._id,
 					name: deletedCategory.name

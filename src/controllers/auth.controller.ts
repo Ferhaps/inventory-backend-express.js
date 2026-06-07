@@ -47,7 +47,7 @@ export class AuthController {
 
 			Log.create({
 				event: LogEvent.USER_REGISTER,
-				user: req.user.id,
+				user: req?.user?.id,
 				details: `Registered user ${user.email}`
 			}).catch((err) => console.error('Error creating register log:', err));
 		} catch (error) {
@@ -64,6 +64,7 @@ export class AuthController {
 					message: 'Validation erros',
 					erros: validation.error.errors.map((error) => error.message)
 				});
+				return;
 			}
 
 			const { email, password } = validation.data;

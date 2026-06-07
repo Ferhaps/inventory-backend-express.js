@@ -11,7 +11,7 @@ export class UsersController {
 			const users = await User.find();
 			const userDtos: UserDto[] = users.map((user) => {
 				return {
-					id: user._id.toString(),
+					id: user._id as string,
 					email: user.email,
 					role: user.role
 				};
@@ -36,7 +36,7 @@ export class UsersController {
 
 			Log.create({
 				event: LogEvent.USER_DELETE,
-				user: req.user.id,
+				user: req?.user?.id,
 				details: `Deleted user ${user.email}`
 			}).catch((err) => console.error('Error creating delete log:', err));
 		} catch (error) {

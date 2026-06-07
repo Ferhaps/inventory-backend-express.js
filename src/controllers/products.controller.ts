@@ -54,7 +54,7 @@ export class ProductController {
 			const category = await Category.findById(categoryId);
 
 			const productDto = new ProductDto({
-				id: product._id.toString(),
+				id: product._id as string,
 				name: product.name,
 				quantity: initialQuantity,
 				categoryId: product.category.toString(),
@@ -65,14 +65,14 @@ export class ProductController {
 
 			Log.create({
 				event: LogEvent.PRODUCT_CREATE,
-				user: req.user.id,
+				user: req?.user?.id,
 				product: {
 					id: product._id,
 					name: product.name
 				},
 				category: {
-					id: category._id,
-					name: category.name
+					id: category?._id,
+					name: category?.name
 				},
 				details: `Initial quantity: ${product.quantity}`
 			}).catch((err) => console.error('Error creating product log:', err));
@@ -111,7 +111,7 @@ export class ProductController {
 
 			Log.create({
 				event: LogEvent.PRODUCT_UPDATE,
-				user: req.user.id,
+				user: req?.user?.id,
 				product: {
 					id: product._id,
 					name: product.name
@@ -139,7 +139,7 @@ export class ProductController {
 
 			Log.create({
 				event: LogEvent.PRODUCT_DELETE,
-				user: req.user.id,
+				user: req?.user?.id,
 				product: {
 					id: product._id,
 					name: product.name
