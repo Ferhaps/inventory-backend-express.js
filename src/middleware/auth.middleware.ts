@@ -19,8 +19,14 @@ const authMiddleware = async (
 	const token = authHeader.split(' ')[1];
 	try {
 		const secretKey = process.env.JWT_SECRET;
+		if (!secretKey) {
+			res.status(500).json({ message: 'Server configuration error' });
+			return;
+		}
 		const decoded = jwt.verify(token, secretKey);
-		req.user = decoded as UserDto;
+		if (decoded) {
+			req.user = decoded as UserDto;
+		}
 		next();
 	} catch (err) {
 		res.status(401).json({ message: 'Invalid or expired token' });

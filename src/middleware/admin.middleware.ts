@@ -21,6 +21,10 @@ const adminMiddleware = async (
 	const token = authHeader.split(' ')[1];
 	try {
 		const secretKey = process.env.JWT_SECRET;
+		if (!secretKey) {
+			res.status(500).json({ message: 'Server configuration error' });
+			return;
+		}
 		const decoded = jwt.verify(token, secretKey) as jwt.JwtPayload;
 		req.user = decoded;
 
