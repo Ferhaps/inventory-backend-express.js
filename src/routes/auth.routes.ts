@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
-import authMiddleware from '../middleware/auth.middleware';
+import adminMiddleware from '../middleware/admin.middleware';
 
 /**
  * @swagger
@@ -137,5 +137,5 @@ import authMiddleware from '../middleware/auth.middleware';
 export const authRoutes = Router();
 const authController = new AuthController();
 
-authRoutes.post('/register', authMiddleware, authController.register);
+authRoutes.post('/register', adminMiddleware, authController.register);
 authRoutes.post('/login', authController.login);
