@@ -61,7 +61,7 @@ export class AuthController {
 			const validation = LoginDtoSchema.safeParse(req.body);
 			if (!validation.success) {
 				res.status(400).json({
-					message: 'Validation erros',
+					message: 'Validation errors',
 					erros: validation.error.errors.map((error) => error.message)
 				});
 				return;
@@ -71,13 +71,13 @@ export class AuthController {
 
 			const user = await User.findOne({ email });
 			if (!user) {
-				res.status(400).json({ message: 'Invalid credentials' });
+				res.status(401).json({ message: 'Invalid credentials' });
 				return;
 			}
 
 			const isValidPassword = await bcrypt.compare(password, user.password);
 			if (!isValidPassword) {
-				res.status(400).json({ message: 'Invalid credentials' });
+				res.status(401).json({ message: 'Invalid credentials' });
 				return;
 			}
 
