@@ -43,7 +43,6 @@ export class CategoryController {
 
 			const newCategory = new Category({
 				name: categoryName,
-				products: []
 			});
 			await newCategory.save();
 
