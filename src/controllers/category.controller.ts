@@ -16,7 +16,7 @@ export class CategoryController {
 				name: category.name,
 				createdAt: (category as any).createdAt,
 				updatedAt: (category as any).updatedAt
-			}));
+			})).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 			res.json(cateogoryDtos);
 		} catch (error) {
 			res.status(400).json({ message: 'Error fetching categories', error });
@@ -36,7 +36,7 @@ export class CategoryController {
 			const existingCategory = await Category.findOne({ name: categoryName });
 			if (existingCategory) {
 				res
-					.status(400)
+					.status(409)
 					.json({ message: 'Cannot create category with existing name' });
 				return;
 			}
