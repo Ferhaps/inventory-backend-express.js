@@ -28,22 +28,36 @@ export class ProductController {
 
 	public async createProduct(req: AuthRequest, res: Response) {
 		try {
-			const { name, categoryId, quantity } = req.query;
-			if (!name || !categoryId) {
+			const { name, categoryId, quantity } = req.body ?? {};
+
+			if (
+				typeof name !== 'string' ||
+				name.trim().length === 0 ||
+				typeof categoryId !== 'string' ||
+				categoryId.trim().length === 0
+			) {
 				res
 					.status(400)
 					.json({
-						message: 'Name and categoryId query parameters are required'
+						message: 'Body must include non-empty string fields: name and categoryId'
 					});
 				return;
 			}
 
-			if (quantity !== undefined && isNaN(Number(quantity))) {
+			if (
+				quantity !== undefined &&
+				(typeof quantity !== 'number' || Number.isNaN(quantity))
+			) {
 				res.status(400).json({ message: 'Quantity must be a valid number' });
 				return;
 			}
 
-			const initialQuantity = quantity !== undefined ? Number(quantity) : 0;
+			if (typeof quantity === 'number' && quantity < 0) {
+				res.status(400).json({ message: 'Quantity cannot be negative' });
+				return;
+			}
+
+			const initialQuantity = typeof quantity === 'number' ? quantity : 0;
 
 			const product = await Product.create({
 				name,
