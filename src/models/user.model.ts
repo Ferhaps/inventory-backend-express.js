@@ -21,7 +21,10 @@ const userSchema = new Schema({
 		type: String,
 		enum: Object.values(UserRole),
 		default: UserRole.ADMIN
-	}
+	},
+	
+}, {
+	timestamps: true
 });
 
 export const User = mongoose.model<IUser>('User', userSchema);
