@@ -18,7 +18,7 @@ export class UsersController {
 					updatedAt: (user as any).updatedAt
 				};
 			})
-			.sort((a, b) => b.createdAt - a.createdAt);
+			.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 			res.json(userDtos);
 		} catch (error) {
 			res.status(400).json({ message: 'Error fetching users', error });
