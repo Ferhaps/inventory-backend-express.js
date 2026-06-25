@@ -9,16 +9,13 @@ export class UsersController {
 	public async getUsers(req: AuthRequest, res: Response) {
 		try {
 			const users = await User.find();
-			const userDtos: UserDto[] = users.map((user) => {
-				return {
-					id: user._id as string,
-					email: user.email,
-					role: user.role,
-					createdAt: (user as any).createdAt,
-					updatedAt: (user as any).updatedAt
-				};
-			})
-			.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+			const userDtos: UserDto[] = users.map((user: any) => ({
+				id: user._id.toString(),
+				email: user.email,
+				role: user.role,
+				createdAt: user.createdAt,
+				updatedAt: user.updatedAt
+			})).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 			res.json(userDtos);
 		} catch (error) {
 			res.status(400).json({ message: 'Error fetching users', error });

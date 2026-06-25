@@ -18,7 +18,7 @@ export class ProductController {
 				categoryId: product.category._id.toString(),
 				createdAt: product.createdAt,
 				updatedAt: product.updatedAt
-			}));
+			})).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 			res.json(productDtos);
 		} catch (error) {
 			res.status(400).json({ message: 'Error fetching products', error });
